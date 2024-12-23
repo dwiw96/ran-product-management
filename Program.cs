@@ -1,7 +1,11 @@
-using ran_product_management_net.Data;
+using ran_product_management_net.Database.Postgresql;
 using Microsoft.EntityFrameworkCore;
-using ran_product_management_net.Models;
+using ran_product_management_net.Database.Postgresql.Models;
 using System.Text.Json.Serialization;
+using ran_product_management_net.Database.Mongodb;
+using System.Text.Json;
+using ran_product_management_net.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,14 +20,21 @@ builder.Services
         Options
             .UseNpgsql(connectionString,
             o => o
-                .MapEnum<ProductInventoryStatus>("product_inventory_status")
-                .MapEnum<ProductCondition>("product_condition"))
+                .MapEnum<ProductStatus>("product_status")
+                .MapEnum<ProductCondition>("product_condition")
+                .MapEnum<ProductMediaType>("product_media_type"))
             .EnableSensitiveDataLogging());
+
+builder.Services.AddSingleton<MongoDBService>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        // options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; // or use a custom snake_case policy
+        options.JsonSerializerOptions.PropertyNamingPolicy = new SnakeCaseNamingPolicy();
     });
 var app = builder.Build();
 

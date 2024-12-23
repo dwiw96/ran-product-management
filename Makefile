@@ -1,13 +1,9 @@
 pg-exec:
-	docker exec -it ran-products-management-net-pg psql -h localhost -p 5432 -U products -d products
+	docker exec -it ran-product-management-pg psql -h localhost -p 5432 -U admin -d products
 pg-stop:
-	docker container stop ran-products-management-net-pg
+	docker container stop ran-product-management-pg
 
-migrate-create:
-	migrate create -ext sql -dir internal/migrations -seq init
-migrate-up:
-	migrate -path internal/migrations -database "postgresql://product:product@localhost:5442/product?sslmode=disable" -verbose up $(v)
-migrate-down:
-	migrate -path internal/migrations -database "postgresql://product:product@localhost:5442/product?sslmode=disable" -verbose down $(v)
-migrate-force:
-	migrate -path internal/migrations -database "postgresql://product:product@localhost:5442/product?sslmode=disable" force $(v)
+mongodb-exec:
+	docker exec -it ran-product-management-mongodb mongosh -u admin -p product123
+mongodb-stop:
+	docker container stop ran-product-management-mongodb

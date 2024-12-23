@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ran-product-management-net")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+01f35c1597ca15a8b6ee60a35aae62cb9ea14179")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+01593bf59a84afd543765090ac1ce2872d1e6cb5")]
 [assembly: System.Reflection.AssemblyProductAttribute("ran-product-management-net")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ran-product-management-net")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

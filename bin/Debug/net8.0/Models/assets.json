@@ -1,0 +1,24 @@
+{
+    "productName": "SAMSUNG Galaxy Z Fold 6 AI Cell Phone",
+    "price": 30000000,
+    "stock": 35,
+    "minBuy": 1,
+    "condition": "New",
+    "status": "Ready",
+    "categoryId": 1,
+    "desc": "CIRCLE IT. FIND IT. SEE IT: Make huge discoveries when you use Circle to Search¹ with Google on the large screen of Galaxy Z Fold6; Circle those shoes on your feed and easily see where to buy them; Search is easier than ever on an expansive screen",
+    "brand": "SAMSUNG",
+    "model": "Galaxy Z Fold 6",
+    "details": {
+      "operating_system" : "OneUI 6.1, Android 14", 
+      "cpu" : "Snapdragon8 Gen3 For Galaxy", 
+      "storage" : "512 GB", 
+      "ram" : "12 GB", 
+      "screen_size" : "7.6 Inches", 
+      "battery" : "4400 mAh", 
+      "color" : "silver" 
+    }
+}
+
+
+  

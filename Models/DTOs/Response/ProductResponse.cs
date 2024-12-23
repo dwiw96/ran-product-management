@@ -1,4 +1,5 @@
-using Microsoft.OpenApi.Extensions;
+using ran_product_management_net.Database.Mongodb.Models;
+using ran_product_management_net.Database.Postgresql.Models;
 
 namespace ran_product_management_net.Models.DTOs.Response;
 
@@ -6,64 +7,37 @@ public class ProductCategoryResponse
 {
     public string Name { get; set; } = string.Empty;
     public string Desc { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; }
     public DateTime ModifiedAt { get; set; }
-    public DateTime DeletedAt { get; set; }
 }
 
-public class ProductInventoryResponse
+public class ProductInventoryResp
 {
-    public string? Status { get; set; }
-    public int Stock { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime ModifiedAt { get; set; }
-    public DateTime DeletedAt { get; set; }
-}
-
-public class CreateProductResponse
-{
-    public int ID { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Desc { get; set; } = string.Empty;
     public int Price { get; set; }
-    public string? Condition { get; set; }
+    public int Stock { get; set; }
     public int MinBuy { get; set; }
-    public ProductCategoryResponse? Category { get; set; }
-    public ProductInventoryResponse? Inventory { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime ModifiedAt { get; set; }
-    public DateTime DeletedAt { get; set; }
+    public string Condition { get; set; } = null!;
+    public string Status { get; set; } = null!;
 }
 
-public class ResMapper
+public class ProductDetailResp
 {
-    public static CreateProductResponse ToProductResponse(Product arg)
-    {
-        if (arg == null)
-            return new CreateProductResponse();
-            
-        var product = new CreateProductResponse()
-        {
-            ID = arg.ID,
-            Name = arg.Name,
-            Desc = arg.Desc ?? string.Empty,
-            Price = arg.Price,
-            Condition = arg.Condition.ToString(),
-            MinBuy = arg.MinBuy,
-            Category = new ProductCategoryResponse
-            {
-                Name = arg.Category?.Name ?? string.Empty,
-                Desc = arg.Category?.Desc ?? string.Empty
-            },
-            Inventory = new ProductInventoryResponse
-            {
-                Status = arg.Inventory?.Status.ToString(),
-                Stock = arg.Inventory?.Stock ?? 0,
-                CreatedAt = arg.Inventory?.CreatedAt ?? DateTime.Now,
-                ModifiedAt = arg.Inventory?.ModifiedAt ?? DateTime.MinValue
-            }
-        };
+    public string? Desc { get; set; }
 
-        return product;
-    }
+    public string Brand { get; set; } = null!;
+
+    public string Model { get; set; } = null!;
+
+    public ProductDetailBase SpecificDetails { get; set; } = null!;
+}
+
+public class ProductResp
+{
+    public Guid Id { get; set; }
+    public string Category { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public ProductInventoryResp Inventory { get; set; } = null!;
+    public ProductDetailResp Details { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
+    public DateTime? ModifiedAt { get; set; }
 }

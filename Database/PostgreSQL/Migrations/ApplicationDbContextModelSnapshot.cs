@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using ran_product_management_net.Data;
-using ran_product_management_net.Models;
+using ran_product_management_net.Database.Postgresql;
+using ran_product_management_net.Database.Postgresql.Models;
 
 #nullable disable
 
-namespace ran_product_management_net.Migrations
+namespace ran_product_management_net.Database.PostgreSQL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -22,71 +22,11 @@ namespace ran_product_management_net.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "product_condition", new[] { "new", "used" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "product_inventory_status", new[] { "preorder", "ready" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "product_media_type", new[] { "file", "image", "video" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "product_status", new[] { "preorder", "ready" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ran_product_management_net.Models.Product", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
-
-                    b.Property<int>("CategoryID")
-                        .HasColumnType("integer")
-                        .HasColumnName("category_id");
-
-                    b.Property<ProductCondition>("Condition")
-                        .HasColumnType("product_condition")
-                        .HasColumnName("condition");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("NOW()");
-
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<string>("Desc")
-                        .HasColumnType("text")
-                        .HasColumnName("desc");
-
-                    b.Property<int>("MinBuy")
-                        .HasColumnType("integer")
-                        .HasColumnName("min_buy");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("modified_at");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("name");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("integer")
-                        .HasColumnName("price");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("CategoryID");
-
-                    b.ToTable("products", t =>
-                        {
-                            t.HasCheckConstraint("ck_products_min_buy_range", "min_buy > 0 AND min_buy <= 1000000");
-
-                            t.HasCheckConstraint("ck_products_price_range", "price > 0 AND price <= 1000000000");
-                        });
-                });
-
-            modelBuilder.Entity("ran_product_management_net.Models.ProductCategory", b =>
+            modelBuilder.Entity("ran_product_management_net.Database.Postgresql.Models.ProductCategory", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -106,7 +46,6 @@ namespace ran_product_management_net.Migrations
                         .HasColumnName("deleted_at");
 
                     b.Property<string>("Desc")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("desc");
 
@@ -128,14 +67,71 @@ namespace ran_product_management_net.Migrations
                     b.ToTable("product_categories");
                 });
 
-            modelBuilder.Entity("ran_product_management_net.Models.ProductInventory", b =>
+            modelBuilder.Entity("ran_product_management_net.Database.Postgresql.Models.ProductInventory", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("category_id");
+
+                    b.Property<ProductCondition>("Condition")
+                        .HasColumnType("product_condition")
+                        .HasColumnName("condition");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<int>("MinBuy")
+                        .HasColumnType("integer")
+                        .HasColumnName("min_buy");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("modified_at");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("integer")
+                        .HasColumnName("price");
+
+                    b.Property<ProductStatus>("Status")
+                        .HasColumnType("product_status")
+                        .HasColumnName("status");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("integer")
+                        .HasColumnName("stock");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("product_inventory", t =>
+                        {
+                            t.HasCheckConstraint("ck_product_inventory_min_buy_range", "min_buy > 0 AND min_buy <= 1000000");
+
+                            t.HasCheckConstraint("ck_product_inventory_price_range", "price > 0 AND price <= 1000000000");
+                        });
+                });
+
+            modelBuilder.Entity("ran_product_management_net.Database.Postgresql.Models.ProductMedia", b =>
+                {
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -155,56 +151,50 @@ namespace ran_product_management_net.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("product_id");
 
-                    b.Property<ProductInventoryStatus>("Status")
-                        .HasColumnType("product_inventory_status")
-                        .HasColumnName("status");
+                    b.Property<Guid>("ProductInventoryId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("Stock")
-                        .HasColumnType("integer")
-                        .HasColumnName("stock");
+                    b.Property<ProductMediaType>("Type")
+                        .HasColumnType("product_media_type")
+                        .HasColumnName("type");
 
-                    b.HasKey("ID");
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("url");
 
-                    b.HasIndex("ProductID")
-                        .IsUnique();
+                    b.HasKey("Id");
 
-                    b.ToTable("product_inventories", t =>
-                        {
-                            t.HasCheckConstraint("ck_product_inventories_stock_range", "stock >= 0 AND stock <= 1000000");
-                        });
+                    b.HasIndex("ProductInventoryId");
+
+                    b.ToTable("product_media");
                 });
 
-            modelBuilder.Entity("ran_product_management_net.Models.Product", b =>
+            modelBuilder.Entity("ran_product_management_net.Database.Postgresql.Models.ProductInventory", b =>
                 {
-                    b.HasOne("ran_product_management_net.Models.ProductCategory", "Category")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryID")
+                    b.HasOne("ran_product_management_net.Database.Postgresql.Models.ProductCategory", "Category")
+                        .WithMany("ProductInventories")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("ran_product_management_net.Models.ProductInventory", b =>
+            modelBuilder.Entity("ran_product_management_net.Database.Postgresql.Models.ProductMedia", b =>
                 {
-                    b.HasOne("ran_product_management_net.Models.Product", "Product")
-                        .WithOne("Inventory")
-                        .HasForeignKey("ran_product_management_net.Models.ProductInventory", "ProductID")
+                    b.HasOne("ran_product_management_net.Database.Postgresql.Models.ProductInventory", "ProductInventory")
+                        .WithMany()
+                        .HasForeignKey("ProductInventoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductInventory");
                 });
 
-            modelBuilder.Entity("ran_product_management_net.Models.Product", b =>
+            modelBuilder.Entity("ran_product_management_net.Database.Postgresql.Models.ProductCategory", b =>
                 {
-                    b.Navigation("Inventory")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ran_product_management_net.Models.ProductCategory", b =>
-                {
-                    b.Navigation("Products");
+                    b.Navigation("ProductInventories");
                 });
 #pragma warning restore 612, 618
         }

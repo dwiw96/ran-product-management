@@ -1,11 +1,11 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using ran_product_management_net.Models;
+using ran_product_management_net.Database.Postgresql.Models;
 
 #nullable disable
 
-namespace ran_product_management_net.Migrations
+namespace ran_product_management_net.Database.PostgreSQL.Migrations
 {
     /// <inheritdoc />
     public partial class InitMigration : Migration
@@ -15,7 +15,8 @@ namespace ran_product_management_net.Migrations
         {
             migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:product_condition", "new,used")
-                .Annotation("Npgsql:Enum:product_inventory_status", "preorder,ready");
+                .Annotation("Npgsql:Enum:product_media_type", "file,image,video")
+                .Annotation("Npgsql:Enum:product_status", "preorder,ready");
 
             migrationBuilder.CreateTable(
                 name: "product_categories",
@@ -24,7 +25,7 @@ namespace ran_product_management_net.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    desc = table.Column<string>(type: "text", nullable: false),
+                    desc = table.Column<string>(type: "text", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
                     modified_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
@@ -35,28 +36,27 @@ namespace ran_product_management_net.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "products",
+                name: "product_inventory",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    desc = table.Column<string>(type: "text", nullable: true),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     price = table.Column<int>(type: "integer", nullable: false),
-                    condition = table.Column<ProductCondition>(type: "product_condition", nullable: false),
+                    stock = table.Column<int>(type: "integer", nullable: false),
                     min_buy = table.Column<int>(type: "integer", nullable: false),
+                    condition = table.Column<ProductCondition>(type: "product_condition", nullable: false),
+                    status = table.Column<ProductStatus>(type: "product_status", nullable: false),
                     category_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
-                    modified_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    modified_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_products", x => x.id);
-                    table.CheckConstraint("ck_products_min_buy_range", "min_buy > 0 AND min_buy <= 1000000");
-                    table.CheckConstraint("ck_products_price_range", "price > 0 AND price <= 1000000000");
+                    table.PrimaryKey("PK_product_inventory", x => x.id);
+                    table.CheckConstraint("ck_product_inventory_min_buy_range", "min_buy > 0 AND min_buy <= 1000000");
+                    table.CheckConstraint("ck_product_inventory_price_range", "price > 0 AND price <= 1000000000");
                     table.ForeignKey(
-                        name: "FK_products_product_categories_category_id",
+                        name: "FK_product_inventory_product_categories_category_id",
                         column: x => x.category_id,
                         principalTable: "product_categories",
                         principalColumn: "id",
@@ -64,26 +64,26 @@ namespace ran_product_management_net.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "product_inventories",
+                name: "product_media",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     product_id = table.Column<int>(type: "integer", nullable: false),
-                    status = table.Column<ProductInventoryStatus>(type: "product_inventory_status", nullable: false),
-                    stock = table.Column<int>(type: "integer", nullable: false),
+                    ProductInventoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    type = table.Column<ProductMediaType>(type: "product_media_type", nullable: false),
+                    url = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
                     modified_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_product_inventories", x => x.id);
-                    table.CheckConstraint("ck_product_inventories_stock_range", "stock >= 0 AND stock <= 1000000");
+                    table.PrimaryKey("PK_product_media", x => x.id);
                     table.ForeignKey(
-                        name: "FK_product_inventories_products_product_id",
-                        column: x => x.product_id,
-                        principalTable: "products",
+                        name: "FK_product_media_product_inventory_ProductInventoryId",
+                        column: x => x.ProductInventoryId,
+                        principalTable: "product_inventory",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -95,25 +95,24 @@ namespace ran_product_management_net.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_product_inventories_product_id",
-                table: "product_inventories",
-                column: "product_id",
-                unique: true);
+                name: "IX_product_inventory_category_id",
+                table: "product_inventory",
+                column: "category_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_products_category_id",
-                table: "products",
-                column: "category_id");
+                name: "IX_product_media_ProductInventoryId",
+                table: "product_media",
+                column: "ProductInventoryId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "product_inventories");
+                name: "product_media");
 
             migrationBuilder.DropTable(
-                name: "products");
+                name: "product_inventory");
 
             migrationBuilder.DropTable(
                 name: "product_categories");
