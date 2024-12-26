@@ -10,23 +10,23 @@ using ran_product_management_net.Models.DTOs.Request;
 using ran_product_management_net.Models.Integration;
 using System.Text.Json;
 using ran_product_management_net.Models.Mapping;
-using ran_product_management_net.Services;
+using ran_product_management_net.Utils;
 
 namespace ran_product_management_net.Controllers;
 
 [Route("api/v1/product")]
 [ApiController]
-public class ProductController(ApplicationDbContext context, MongoDBService mongoDBService, IMapper mapper) : ControllerBase
+public class ProductController(ApplicationDbContext context, MongoDBService mongoDbService, IMapper mapper) : ControllerBase
 {
     private readonly ApplicationDbContext _context = context;
-    private readonly IMongoCollection<ProductDetail>? _productDetailCollection = mongoDBService.Database?.GetCollection<ProductDetail>("product_details");
+    private readonly IMongoCollection<ProductDetail>? _productDetailCollection = mongoDbService.Database?.GetCollection<ProductDetail>("product_details");
     private readonly IMapper _mapper = mapper;
 
     [HttpGet]
     public async Task<IActionResult> ListProducts()
     {
         var productInventory = await _context.ProductInventories.ToListAsync();
-        if (productInventory == null)
+        if (productInventory.Count == 0)
             return NotFound();
 
         var productDetail = await _productDetailCollection.Find(FilterDefinition<ProductDetail>.Empty).ToListAsync();
@@ -48,7 +48,7 @@ public class ProductController(ApplicationDbContext context, MongoDBService mong
     }
 
     [HttpGet("{id}")]
-    public  async Task<IActionResult> GetByID([FromRoute] string id)
+    public  async Task<IActionResult> GetById([FromRoute] string id)
     {
         // if (!ModelState.IsValid)
         //     return BadRequest(ModelState);
@@ -83,7 +83,7 @@ public class ProductController(ApplicationDbContext context, MongoDBService mong
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateProduct([FromBody] CreateProductReq productReq)
+    public async Task<IActionResult> Create([FromBody] CreateProductReq productReq)
     {
         if (!ModelState.IsValid)
         {
@@ -132,7 +132,20 @@ public class ProductController(ApplicationDbContext context, MongoDBService mong
 
         Product product= new();
 
-        return CreatedAtAction(nameof(GetByID), new { id = uuid }, product);
+        return CreatedAtAction(nameof(GetById), new { id = uuid }, product);
+    }
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update([FromRoute] string id)
+    {
+        var uuid = Guid.Parse(id);
+        var filter = Builders<ProductDetail>.Filter.Eq(f => f.Id, uuid);
+        
+        if (_productDetailCollection == null)
+            return StatusCode(500);
+        
+        await _productDetailCollection.ReplaceOneAsync(filter, _mapper.Map<ProductDetail>(uuid));
+
+        return AcceptedAtAction(nameof(GetById), new { id = uuid }, _mapper.Map<ProductDetail>(uuid));
     }
 }
-

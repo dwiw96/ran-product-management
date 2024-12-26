@@ -12,8 +12,10 @@ public class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         CreateMap<CreateProductCategoryReq, ProductCategory>();
-        CreateMap<ProductCategory, ProductCategoryResp>()
-            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("yyyy-MM-dd")));
+        CreateMap<ProductCategory, ProductCategoryResp>();
+            // .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("yyyy-MM-dd")));
+        CreateMap<UpdateProductCategoryReq, UpdateProductCategoryReq>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
         CreateMap<ListProductDto, Product>();
         CreateMap<GetProductDto, Product>();
         CreateMap<CreateProductReq, ProductInventory>();

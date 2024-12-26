@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ran_product_management_net.Database.Postgresql.Models;
 using System.Text.Json.Serialization;
 using ran_product_management_net.Database.Mongodb;
-using System.Text.Json;
-using ran_product_management_net.Services;
+using ran_product_management_net.Utils;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +15,8 @@ builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("PostgresConn");
 builder.Services
-    .AddDbContext<ApplicationDbContext>(Options =>
-        Options
+    .AddDbContext<ApplicationDbContext>(options =>
+        options
             .UseNpgsql(connectionString,
             o => o
                 .MapEnum<ProductStatus>("product_status")

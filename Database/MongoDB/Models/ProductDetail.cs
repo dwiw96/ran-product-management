@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using ran_product_management_net.Services;
+using ran_product_management_net.Utils;
 
 
 namespace ran_product_management_net.Database.Mongodb.Models;

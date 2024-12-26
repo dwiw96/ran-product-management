@@ -1,0 +1,53 @@
+[
+  {
+    "product_name": "Human Greatness Otter OS T-Shirt Steel Blue HGBasic",
+    "price": 120000,
+    "stock": 1,
+    "min_buy": 1,
+    "condition": "New",
+    "status": "Ready",
+    "category_id": 2,
+    "desc": "Oversize T-Shirt\n- Berbahan 68% Micro Fiber Polyester & 32% Cotton\n- Ketebalan 290 Gsm\n- Karakter Kain Permukaannya Lembut dan Tebal (Lebih Tebal Dari Heavy Cotton)\n- Unisex Bisa Dipakai Pria / Wanita\n- Produk Lokal Dengan Kualitas International\n- Dibuat Di Indonesia",
+    "brand": "Human Greatness",
+    "model": "Otter OS T-Shirt",
+    "details": {
+      "fabric_type": "68% Micro Fiber Polyester & 32% Cotton",
+      "size": "L",
+      "color": "Steel Blue"
+    }
+  },
+  {
+    "product_name": "Eiger Cordial Bracelet 89",
+    "price": 5000,
+    "stock": 250,
+    "min_buy": 10,
+    "condition": "New",
+    "status": "Ready",
+    "category_id": 2,
+    "desc": "Gelang Cordial hadir untuk menemani kegiatan sehari-hari Anda jadi lebih gaya.",
+    "brand": "Eiger",
+    "model": "Cordial",
+    "details": {
+      "fabric_type": "-",
+      "size": "-",
+      "color": "brown, silver, grey"
+    }
+  },
+  {
+    "product_name": "Insurgent Club - Trucker Jacket Denim Circle Type-2 Blue Washed",
+    "price": 449000,
+    "stock": 0,
+    "min_buy": 1,
+    "condition": "New",
+    "status": "Preorder",
+    "category_id": 2,
+    "desc": "Tampil stylish dengan Jaket Denim Blue, yang dirancang dengan tipe 2 washing yang memberi kesan vintage dan cool. Jaket ini dilengkapi dengan aksen sablon plastisol di bagian belakang, menambahkan sentuhan unik dan berani pada tampilan Anda. Dengan potongan reguler, jaket ini memberikan kenyamanan yang sempurna untuk dikenakan di berbagai kesempatan, baik untuk bersantai di akhir pekan atau jalan-jalan di kota.",
+    "brand": "Insurgent Club",
+    "model": "Trucker",
+    "details": {
+      "fabric_type": "Denim",
+      "size": "L",
+      "color": "Blue Washed"
+    }
+  }
+]

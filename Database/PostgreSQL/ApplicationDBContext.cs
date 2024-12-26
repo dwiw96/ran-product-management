@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using ran_product_management_net.Database.Postgresql.Models;
 
 namespace ran_product_management_net.Database.Postgresql;

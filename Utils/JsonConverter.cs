@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using ran_product_management_net.Database.Mongodb.Models;
 
-namespace ran_product_management_net.Services;
+namespace ran_product_management_net.Utils;
 
 public class JsonPolymorphicConverter<TBase> : JsonConverter<TBase>
 {

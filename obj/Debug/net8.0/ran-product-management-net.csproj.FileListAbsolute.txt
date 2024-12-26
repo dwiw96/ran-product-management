@@ -26,7 +26,6 @@
 /home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.ran-product-management-net.props
 /home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/obj/Debug/net8.0/staticwebassets.pack.json
 /home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/obj/Debug/net8.0/scopedcss/bundle/ran-product-management-net.styles.css
-/home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/obj/Debug/net8.0/ran-product-management-net.csproj.CopyComplete
 /home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/obj/Debug/net8.0/ran-product-management-net.dll
 /home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/obj/Debug/net8.0/refint/ran-product-management-net.dll
 /home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/obj/Debug/net8.0/ran-product-management-net.pdb
@@ -154,4 +153,7 @@
 /home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/bin/Debug/net8.0/SharpCompress.dll
 /home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/bin/Debug/net8.0/Snappier.dll
 /home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/bin/Debug/net8.0/ZstdSharp.dll
-/home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/bin/Debug/net8.0/Models/assets.json
+/home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/bin/Debug/net8.0/Models/Assets/ElectronicAssets.json
+/home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/bin/Debug/net8.0/Models/Assets/FashionAssets.json
+/home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/bin/Debug/net8.0/Models/Assets/SmartphoneAssets.json
+/home/dwiw22/project/project-portofolio/realtime-analytics-and-notifications/ran-product-management-net/obj/Debug/net8.0/ran-product-management-net.csproj.CopyComplete

@@ -8,3 +8,9 @@ public class CreateProductCategoryReq
     public required string Name { get; set; }
     public string? Desc { get; set; }
 }
+
+public class UpdateProductCategoryReq
+{
+    public string? Name { get; set; }
+    public string? Desc { get; set; }
+}
