@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/ran-product-management-net.props" />
-</Project>
