@@ -1,0 +1,6 @@
+@ran_product_management_net_HostAddress = http://localhost:8080
+
+GET {{ran_product_management_net_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
