@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Npgsql;
 using ran_product_management_net.Database.Postgresql;
 using ran_product_management_net.Database.Postgresql.Models;
 using ran_product_management_net.Models.DTOs.Request;
@@ -12,18 +14,20 @@ public class ProductCategoryService(ApplicationDbContext context, IMapper mapper
 {
     private readonly ApplicationDbContext _context = context;
     private readonly IMapper _mapper = mapper;
-
+    
     public async Task<List<ProductCategoryResp>> ListCategories()
     {
         var dbRes = await _context.ProductCategories
             .Where(t => t.DeletedAt == null)
             .OrderBy(t => t.Id)
             .ToListAsync();
+        if (dbRes.Count == 0)
+            throw new NotFoundException("category is empty");
         
         return _mapper.Map<List<ProductCategoryResp>>(dbRes);
     }
 
-    public async Task<ProductCategoryResp?> GetCategoryById(int id)
+    public async Task<ProductCategoryResp> GetCategoryById(int id)
     {
         var dbRes = await _context.ProductCategories
             .AsNoTracking()
@@ -37,10 +41,34 @@ public class ProductCategoryService(ApplicationDbContext context, IMapper mapper
 
     public async Task<ProductCategoryResp> CreateProductCategory(CreateProductCategoryReq arg)
     {
-        var category = _mapper.Map<ProductCategory>(arg);
-        var dbRes = await _context.ProductCategories
-            .AddAsync(category);
-        await _context.SaveChangesAsync();
+        EntityEntry<ProductCategory> dbRes;
+        try
+        {
+            var category = _mapper.Map<ProductCategory>(arg);
+            dbRes = await _context.ProductCategories
+                .AddAsync(category);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is PostgresException p)
+        {
+            switch (p.SqlState)
+            {
+                case "23502":
+                    throw new NotNullException(p.MessageText);
+                case "23505":
+                    throw new DuplicateDataException(p.MessageText);
+                case "22001":
+                    throw new LengthException(p.MessageText);
+                default:
+                    throw;
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("exception: " + e.Message);
+            throw;
+        }
+
         return _mapper.Map<ProductCategoryResp>(dbRes.Entity);
     }
 
