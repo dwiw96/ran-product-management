@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Smartphone",
+    "desc": "Android Phone, Iphone, Phone Component, Phone Accessories, etc..."
+  },
+  {
+    "name": "Fashion",
+    "desc": "T-shirt, Shirt, Hoodie, Denim, etc.."
+  },
+  {
+    "name": "Electronic",
+    "desc": "Tv, Refrigerator, Speaker, Socket, etc..."
+  },
+  {
+    "name": "Food & Drinks",
+    "desc": "Canned, Bottle, Fresh, Snacks, etc..."
+  },
+  {
+    "name": "Books",
+    "desc": "Engineering, Manga, Novel, Economic, Politic, etc..."
+  },
+  {
+    "name": "Sports & Outdoors",
+    "desc": "Running, Yoga, Camping, Gym, Golf, etc..."
+  },
+  {
+    "name": "Animal Care",
+    "desc": "Cat, Dog, Chicken, Fish, etc..."
+  }
+]
