@@ -112,4 +112,44 @@ public class ProductCategoryService(ApplicationDbContext context, IMapper mapper
             throw;
         }
     }
+    
+    public async Task<(bool isDeleted, int categoryId)> GetAllCategoryByName(string name)
+    {
+        var dbRes = await _context.ProductCategories
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Name == name);
+        if (dbRes == null)
+            return (false, 0);
+        if (dbRes.DeletedAt == null)
+            throw new DuplicateDataException("category name must be unique to each other category");
+        
+        return (true, dbRes.Id);
+    }
+    
+    public async Task RecreateCategory(CreateProductCategoryReq arg)
+    {
+        try
+        {
+            var rowsUpdatedNumber = await _context.ProductCategories
+                .Where(t => t.Name == arg.Name)
+                .Where(t => t.DeletedAt != null)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(t => t.Desc, arg.Desc)
+                    .SetProperty(t => t.DeletedAt, (DateTime?)null)
+                    .SetProperty(t => t.ModifiedAt, DateTime.Now));
+            
+            await _context.SaveChangesAsync();
+            
+            if (rowsUpdatedNumber == 0)
+            {
+                throw new DatabaseCrudFailedException("failed to create category");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
+    }
 }
