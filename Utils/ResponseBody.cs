@@ -2,7 +2,7 @@ namespace ran_product_management_net.Utils;
 
 internal static class HttpStatus
 {
-    internal static Dictionary<int, string> HttpStatusPair = new Dictionary<int, string>
+    internal static readonly Dictionary<int, string> HttpStatusPair = new Dictionary<int, string>
     {
         {200, "OK"},
         {201, "Created"},
