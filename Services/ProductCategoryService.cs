@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Npgsql;
 using ran_product_management_net.Database.Postgresql;
 using ran_product_management_net.Database.Postgresql.Models;
 using ran_product_management_net.Models.DTOs.Request;
@@ -12,18 +14,20 @@ public class ProductCategoryService(ApplicationDbContext context, IMapper mapper
 {
     private readonly ApplicationDbContext _context = context;
     private readonly IMapper _mapper = mapper;
-
+    
     public async Task<List<ProductCategoryResp>> ListCategories()
     {
         var dbRes = await _context.ProductCategories
             .Where(t => t.DeletedAt == null)
             .OrderBy(t => t.Id)
             .ToListAsync();
+        if (dbRes.Count == 0)
+            throw new NotFoundException("category is empty");
         
         return _mapper.Map<List<ProductCategoryResp>>(dbRes);
     }
 
-    public async Task<ProductCategoryResp?> GetCategoryById(int id)
+    public async Task<ProductCategoryResp> GetCategoryById(int id)
     {
         var dbRes = await _context.ProductCategories
             .AsNoTracking()
@@ -37,10 +41,34 @@ public class ProductCategoryService(ApplicationDbContext context, IMapper mapper
 
     public async Task<ProductCategoryResp> CreateProductCategory(CreateProductCategoryReq arg)
     {
-        var category = _mapper.Map<ProductCategory>(arg);
-        var dbRes = await _context.ProductCategories
-            .AddAsync(category);
-        await _context.SaveChangesAsync();
+        EntityEntry<ProductCategory> dbRes;
+        try
+        {
+            var category = _mapper.Map<ProductCategory>(arg);
+            dbRes = await _context.ProductCategories
+                .AddAsync(category);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is PostgresException p)
+        {
+            switch (p.SqlState)
+            {
+                case "23502":
+                    throw new NotNullException(p.MessageText);
+                case "23505":
+                    throw new DuplicateDataException(p.MessageText);
+                case "22001":
+                    throw new LengthException(p.MessageText);
+                default:
+                    throw;
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("exception: " + e.Message);
+            throw;
+        }
+
         return _mapper.Map<ProductCategoryResp>(dbRes.Entity);
     }
 
@@ -75,6 +103,46 @@ public class ProductCategoryService(ApplicationDbContext context, IMapper mapper
             if (rowsUpdatedNumber == 0)
             {
                 throw new DatabaseCrudFailedException("no data deleted");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
+    }
+    
+    public async Task<(bool isDeleted, int categoryId)> GetAllCategoryByName(string name)
+    {
+        var dbRes = await _context.ProductCategories
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Name == name);
+        if (dbRes == null)
+            return (false, 0);
+        if (dbRes.DeletedAt == null)
+            throw new DuplicateDataException("category name must be unique to each other category");
+        
+        return (true, dbRes.Id);
+    }
+    
+    public async Task RecreateCategory(CreateProductCategoryReq arg)
+    {
+        try
+        {
+            var rowsUpdatedNumber = await _context.ProductCategories
+                .Where(t => t.Name == arg.Name)
+                .Where(t => t.DeletedAt != null)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(t => t.Desc, arg.Desc)
+                    .SetProperty(t => t.DeletedAt, (DateTime?)null)
+                    .SetProperty(t => t.ModifiedAt, DateTime.Now));
+            
+            await _context.SaveChangesAsync();
+            
+            if (rowsUpdatedNumber == 0)
+            {
+                throw new DatabaseCrudFailedException("failed to create category");
             }
 
         }
