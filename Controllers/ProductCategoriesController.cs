@@ -17,20 +17,16 @@ public class ProductCategoryController(ApplicationDbContext context, IMapper map
     [HttpGet]
     public async Task<IActionResult> ListProductCategory()
     {
-        List<ProductCategoryResp> resp;
+        List<ProductCategoryResp> result;
 
         try
         {
-            resp = await _service.ListCategories();
+            result = await _service.ListCategories();
         }
         catch (NotFoundException e)
         {
-            FailedResponse errResp = new(204,  "there are no category in the database", 
-                new Dictionary<string, List<string>>()
-                {
-                    {"category", [e.Message] } 
-                });
-            return StatusCode(204, errResp);
+            SuccessWithData<List<ProductCategoryResp>> emptyResp = new(200, "there are no category in the database", []);
+            return Ok(emptyResp);
         }
         catch (Exception e)
         {
@@ -41,8 +37,10 @@ public class ProductCategoryController(ApplicationDbContext context, IMapper map
                 });
             return StatusCode(500, errResp);
         }
+        
+        SuccessWithData<List<ProductCategoryResp>> response = new(200, "Product Category Data", result); 
 
-        return Ok(resp);
+        return Ok(response);
     }
 
     [HttpGet("{id:int}")]
@@ -86,8 +84,16 @@ public class ProductCategoryController(ApplicationDbContext context, IMapper map
         ProductCategoryResp categoryData;
         try
         {
-            
-            categoryData = await _service.CreateProductCategory(req);
+            var getResult = await _service.GetAllCategoryByName(req.Name);
+            if (getResult.isDeleted)
+            {
+                await _service.RecreateCategory(req);
+                categoryData = await _service.GetCategoryById(getResult.categoryId);
+            }
+            else
+            {
+                categoryData = await _service.CreateProductCategory(req);
+            }
         }
         catch (NotNullException e)
         {
