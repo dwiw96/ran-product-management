@@ -1,5 +1,4 @@
-using System.Reflection;
-using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 using ran_product_management_net.Database.Mongodb.Models;
 using ran_product_management_net.Database.Postgresql.Models;
 
@@ -19,15 +18,28 @@ public class GetProductDto
 
 public class CreateProductReq
 {
+    [Required(ErrorMessage = "product_name is required")]
+    [StringLength(255, MinimumLength = 1, ErrorMessage = "Product name must be between 1 and 255 characters")]
     public string ProductName { get; set; } = string.Empty;
+    [Required(ErrorMessage = "price is required")]
+    [Range(1, 1000000000, ErrorMessage = "price must be between $1 and $2")]
     public int Price { get; set; }
+    [Required(ErrorMessage = "stock is required")]
+    [Range(1, 1000000000, ErrorMessage = "stock must be between $1 and $2")]
     public int Stock { get; set; }
+    [Required(ErrorMessage = "min_buy is required")]
+    [Range(1, 1000000, ErrorMessage = "min_buy must be between $1 and $2")]
     public int MinBuy { get; set; }
+    [Required(ErrorMessage = "condition is required")]
     public ProductCondition Condition { get; set; }
+    [Required(ErrorMessage = "status is required")]
     public ProductStatus Status { get; set; }
+    [Required(ErrorMessage = "category is required")]
     public int CategoryId { get; set; }
     public string? Desc { get; set; }
+    [Required(ErrorMessage = "brand is required")]
     public string Brand { get; set; } = null!;
+    [Required(ErrorMessage = "models is required")]
     public string Model { get; set; } = null!;
     public Dictionary<string, string> Details { get; set; } = null!;
 
@@ -51,43 +63,3 @@ public class CreateProductReq
         }
     }
 }
-
-// public class ManualMapping2
-// {
-//     public Dictionary<string, string>? Details { get; set; }
-
-//     public static object ToSpecificDetail<T>(Dictionary<string,string> details)
-//     {
-//         object result = typeof(T);
-//         var properties = typeof(T).GetProperties()
-//             .Where(p => p.GetCustomAttributes(typeof(BsonElementAttribute), false).Any());
-
-//         foreach (var prop in properties)
-//         {
-//             var bsonAttribute = prop.GetCustomAttribute<BsonElementAttribute>();
-//             if (bsonAttribute != null && details.TryGetValue(bsonAttribute.ElementName, out string? value))
-//             {
-//                 prop.SetValue(result, value);
-//             }
-//         }
-
-//         return result;
-//     }
-//     public static Smartphone ToSmartphone(Dictionary<string,string> details)
-//     {
-//         var smartphone = new Smartphone();
-//         var properties = typeof(Smartphone).GetProperties()
-//             .Where(p => p.GetCustomAttributes(typeof(BsonElementAttribute), false).Any());
-
-//         foreach (var prop in properties)
-//         {
-//             var bsonAttribute = prop.GetCustomAttribute<BsonElementAttribute>();
-//             if (bsonAttribute != null && details.TryGetValue(bsonAttribute.ElementName, out string? value))
-//             {
-//                 prop.SetValue(smartphone, value);
-//             }
-//         }
-
-//         return smartphone;
-//     }
-// }
