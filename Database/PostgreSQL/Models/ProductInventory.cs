@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ran_product_management_net.Models.Integration;
 
 namespace ran_product_management_net.Database.Postgresql.Models;
 
@@ -31,7 +32,7 @@ public enum ProductStatus
 }
 
 [Table("product_inventory")]
-public class ProductInventory
+public class ProductInventory : AuditableEntity
 {
     [Column("id")]
     [Required]
@@ -41,40 +42,40 @@ public class ProductInventory
     [Column("price")]
     [Required]
     [Range(1, int.MaxValue)]
-    public int Price { get; set; }
+    public int? Price { get; set; }
     
     [Column("stock")]
     [Required]
     [Range(0, uint.MaxValue)]
-    public int Stock { get; set; }
+    public int? Stock { get; set; }
     
     [Column("min_buy")]
     [Required]
     [Range(1, uint.MaxValue)]
-    public int MinBuy { get; set; }
+    public int? MinBuy { get; set; }
     
     [Column("condition")]
     [Required]
-    public ProductCondition Condition { get; set; }
+    public ProductCondition? Condition { get; set; }
     
     [Column("status")]
     [Required]
-    public ProductStatus Status { get; set; }
+    public ProductStatus? Status { get; set; }
     
     [Column("category_id")]
     [Required]
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
     public ProductCategory Category { get; set; } = null!;
     
-    [Column("created_at", TypeName = "timestamp without time zone")]
-    [Required]
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    
-    [Column("modified_at", TypeName = "timestamp without time zone")]
-    public DateTime? ModifiedAt { get; set; }
-    
-    [Column("deleted_at", TypeName = "timestamp without time zone")]
-    public DateTime? DeletedAt { get; set; }
+    // [Column("created_at", TypeName = "timestamp without time zone")]
+    // [Required]
+    // public DateTime CreatedAt { get; set; } = DateTime.Now;
+    //
+    // [Column("modified_at", TypeName = "timestamp without time zone")]
+    // public DateTime? ModifiedAt { get; set; }
+    //
+    // [Column("deleted_at", TypeName = "timestamp without time zone")]
+    // public DateTime? DeletedAt { get; set; }
 
     public void Print()
     {

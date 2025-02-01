@@ -11,6 +11,11 @@ public class ManualMapping
 {
     public static T ToSpecificDetail<T>(Dictionary<string,string> details) where T : ProductDetailBase, new()
     {
+        var enumDictionary = new Dictionary<string, Electronic.DimensionUnit>
+        {
+            { "Metric", Electronic.DimensionUnit.Metric },
+            { "Imperial", Electronic.DimensionUnit.Imperial },
+        };
         T result = Activator.CreateInstance<T>();
 
         var properties = typeof(T).GetProperties()
@@ -21,7 +26,15 @@ public class ManualMapping
             var bsonAttribute = prop.GetCustomAttribute<BsonElementAttribute>();
             if (bsonAttribute != null && details.TryGetValue(bsonAttribute.ElementName, out string? value))
             {
-                prop.SetValue(result, value);
+                try
+                {
+                    prop.SetValue(result, value);
+                }
+                catch (ArgumentException e)
+                {
+                    var enumVal = enumDictionary[value];
+                    prop.SetValue(result, enumVal);
+                }
             }
         }
 
@@ -35,6 +48,8 @@ public class ManualMapping
         var length = inventory.Count;
         for (var i = 0; i < length; i++)
         {
+            if (inventory[i].Id !=  productDetail[i].Id)
+                continue;
             ProductResp temp = new()
             {
                 Id = inventory[i].Id,
