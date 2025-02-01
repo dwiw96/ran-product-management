@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using ran_product_management_net.Models.Integration;
 using ran_product_management_net.Utils;
 
 
@@ -11,7 +12,7 @@ namespace ran_product_management_net.Database.Mongodb.Models;
 [JsonConverter(typeof(JsonPolymorphicConverter<ProductDetailBase>))]
 public class ProductDetailBase {}
 
-public class ProductDetail
+public class ProductDetail : AuditableEntity
 {
     [BsonId]
     [BsonElement("_id")]
@@ -19,31 +20,31 @@ public class ProductDetail
     public Guid Id { get; set; }
 
     [BsonElement("product_name")]
-    public string ProductName { get; set; } = null!;
+    public string? ProductName { get; set; } = null!;
 
     [BsonElement("desc")]
     public string? Desc { get; set; }
 
     [BsonElement("brand")]
-    public string Brand { get; set; } = null!;
+    public string? Brand { get; set; } = null!;
 
     [BsonElement("model")]
-    public string Model { get; set; } = null!;
+    public string? Model { get; set; } = null!;
 
     [BsonElement("category")]
-    public string Category { get; set; } = null!;
+    public string? Category { get; set; } = null!;
 
     [BsonElement("specific_details")]
     public ProductDetailBase SpecificDetails { get; set; } = null!;
 
-    [BsonElement("created_at")]
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-
-    [BsonElement("modified_at")]
-    public DateTime? ModifiedAt { get; set; }
-
-    [BsonElement("deleted_at")]
-    public DateTime? DeletedAt { get; set; }
+    // [BsonElement("created_at")]
+    // public DateTime CreatedAt { get; set; } = DateTime.Now;
+    //
+    // [BsonElement("modified_at")]
+    // public DateTime? ModifiedAt { get; set; }
+    //
+    // [BsonElement("deleted_at")]
+    // public DateTime? DeletedAt { get; set; }
 
 
     // public void Display()
@@ -121,11 +122,15 @@ public class Electronic : ProductDetailBase
         Metric,
         Imperial
     }
+    [BsonElement("unit")]
     public DimensionUnit Unit { get; set; }
-
-    public int Dimension { get; set; }
-
-    public int Power { get; set; }
-
+    
+    [BsonElement("dimension")]
+    public string? Dimension { get; set; }
+    
+    [BsonElement("power")]
+    public string? Power { get; set; }
+    
+    [BsonElement("color")]
     public string? Color { get; set; }
 }
