@@ -10,7 +10,7 @@ public class ProductCategoryRepository(ApplicationDbContext context) : IProductR
 {
     private readonly ApplicationDbContext _context = context;
     
-    public async Task<ProductCategory> GetProductByIdAsync(int id)
+    public async Task<ProductCategory> GetProductByIdAsync(int? id)
     {
         var result = await _context.ProductCategories
             .AsNoTracking()
@@ -34,6 +34,11 @@ public class ProductCategoryRepository(ApplicationDbContext context) : IProductR
         throw new NotImplementedException("still not created.");
     }
     public Task<ProductCategory> GetAllProductByNameAsync(string categoryName)
+    {
+        throw new NotImplementedException("still not created.");
+    }
+    
+    public Task UpdateProductAsync(ProductCategory arg)
     {
         throw new NotImplementedException("still not created.");
     }

@@ -20,5 +20,7 @@ public class AutoMapperProfile : Profile
         CreateMap<CreateProductReq, ProductDetail>();
         CreateMap<ProductInventory, ProductInventoryResp>();
         CreateMap<ProductDetail, ProductDetailResp>();
+        CreateMap<UpdateProductReq, ProductDetail>();
+        CreateMap<UpdateProductReq, ProductInventory>();
     }
 }

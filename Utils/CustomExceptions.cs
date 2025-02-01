@@ -7,3 +7,4 @@ public class DuplicateDataException(string message) : Exception(message);
 public class LengthException(string message) : Exception(message);
 public class ServerErrorException(string message) : Exception(message);
 public class NotImplementedException(string message) : Exception(message);
+public class InvalidParameterException(string message) : Exception(message);

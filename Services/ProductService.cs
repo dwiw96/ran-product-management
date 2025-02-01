@@ -89,4 +89,33 @@ public class ProductService(ApplicationDbContext context, MongoDBService mongoDb
 
         return uuid.ToString();
     }
+
+    public async Task<ProductResp?> UpdateProduct(string id, UpdateProductReq arg)
+    {
+        var uuid = Guid.Parse(id);
+        Console.WriteLine("new desc: " + arg.Desc);
+
+        // get product inventory
+        var productInventory = await _inventoryRepository.GetProductByIdAsync(uuid);
+        
+        // get product detail
+        var productDetail = await _detailRepository.GetProductByIdAsync(uuid);
+        
+        // get product category
+        if (arg.CategoryId != null)
+            await _categoryRepository.GetProductByIdAsync(arg.CategoryId);
+        
+        // update the detail
+        var updateDetailArg = _mapper.Map<ProductDetail>(arg);
+        updateDetailArg.Id = uuid;
+        await _detailRepository.UpdateProductAsync(updateDetailArg);
+        
+        // update the inventory
+        var updateInventoryArg = _mapper.Map<ProductInventory>(arg);
+        updateInventoryArg.Id = uuid;
+        await _inventoryRepository.UpdateProductAsync(updateInventoryArg);
+        
+        // read updated data
+        return GetProductById(id).Result;
+    }
 }

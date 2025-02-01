@@ -145,16 +145,35 @@ public class ProductController(ApplicationDbContext context, MongoDBService mong
     }
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] string id)
+    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UpdateProductReq productReq)
     {
-        var uuid = Guid.Parse(id);
-        var filter = Builders<ProductDetail>.Filter.Eq(f => f.Id, uuid);
-        
-        if (_productDetailCollection == null)
-            return StatusCode(500);
-        
-        await _productDetailCollection.ReplaceOneAsync(filter, _mapper.Map<ProductDetail>(uuid));
+        ProductResp? result;
+        // productReq.Id = id;
+        try
+        {
+            result = await _service.UpdateProduct(id, productReq);
+        }
+        catch (NotFoundException e)
+        {
+            FailedResponse errResp = new(400, "product or category was not found",
+                new Dictionary<string, List<string>>()
+                {
+                    { "message", [e.Message] }
+                });
 
-        return AcceptedAtAction(nameof(GetById), new { id = uuid }, _mapper.Map<ProductDetail>(uuid));
+            return new BadRequestObjectResult(errResp);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            FailedResponse errResp = new(500,  "there is an error in the server", 
+                new Dictionary<string, List<string>>()
+                {
+                    {"server", [e.Message] } 
+                });
+            return StatusCode(500, e.Message);
+        }
+
+        return AcceptedAtAction(nameof(GetById), new { id = id }, result);
     }
 }

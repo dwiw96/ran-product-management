@@ -20,19 +20,19 @@ public class ProductDetail : AuditableEntity
     public Guid Id { get; set; }
 
     [BsonElement("product_name")]
-    public string ProductName { get; set; } = null!;
+    public string? ProductName { get; set; } = null!;
 
     [BsonElement("desc")]
     public string? Desc { get; set; }
 
     [BsonElement("brand")]
-    public string Brand { get; set; } = null!;
+    public string? Brand { get; set; } = null!;
 
     [BsonElement("model")]
-    public string Model { get; set; } = null!;
+    public string? Model { get; set; } = null!;
 
     [BsonElement("category")]
-    public string Category { get; set; } = null!;
+    public string? Category { get; set; } = null!;
 
     [BsonElement("specific_details")]
     public ProductDetailBase SpecificDetails { get; set; } = null!;

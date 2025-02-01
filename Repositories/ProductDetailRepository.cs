@@ -2,7 +2,6 @@ using AutoMapper;
 using MongoDB.Driver;
 using ran_product_management_net.Database.Mongodb;
 using ran_product_management_net.Database.Mongodb.Models;
-using ran_product_management_net.Database.Postgresql.Models;
 using ran_product_management_net.Utils;
 using NotImplementedException = ran_product_management_net.Utils.NotImplementedException;
 
@@ -67,7 +66,47 @@ public class ProductDetailRepository(MongoDBService mongoDbService, IMapper mapp
         
         return result;
     }
-    public Task<ProductDetail> GetProductByIdAsync(int id)
+
+    public async Task UpdateProductAsync(ProductDetail arg)
+    {
+        if (_productDetailCollection == null)
+        {
+            Console.WriteLine("not connected with mongodb database");
+            throw new ServerErrorException("not connected with mongodb database");
+        }
+        
+        // 1. Create an update definition builder for Product type
+        var updateDefBuilder = Builders<ProductDetail>.Update;
+
+        // 2. Get all properties of Product class using reflection
+        var updates = typeof(ProductDetail)
+            // Get all properties
+            .GetProperties()
+            // Filter out "Id" property and null values
+            .Where(p => p.Name != "Id" && p.GetValue(arg) != null)
+            // Create Set operations for each non-null property
+            .Select(p => updateDefBuilder.Set(p.Name, p.GetValue(arg)));
+
+        // 3. If there are any updates, combine them and execute
+        if (updates.Any())
+        {
+            var combinedUpdate = updateDefBuilder.Combine(updates);
+            await _productDetailCollection.UpdateOneAsync(
+                p => p.Id == arg.Id,
+                combinedUpdate
+            );
+        }
+        
+        // var filter = Builders<ProductDetail>.Filter.Eq(c => c.Id, arg.Id);
+        // var update = Builders<ProductDetail>.Update
+        //     .Set(c => c.ProductName, arg.ProductName)
+        //     .Set(c => c.Desc, arg.Desc)
+        //     .Set(c => c.Brand, arg.Brand)
+        //     .Set(c => c.Model, arg.Model)
+        //     .Set(c => c.Category, arg.Category);
+        // var res = await _productDetailCollection.UpdateOneAsync(filter, update);
+    }
+    public Task<ProductDetail> GetProductByIdAsync(int? id)
     {
         throw new NotImplementedException("Method not created yet.");
     }

@@ -10,5 +10,6 @@ public interface IProductRepository<T> where T : AuditableEntity
     Task<T> GetProductByIdAsync(Guid uuid);
     Task<T> AddProductAsync(T product);
     Task<T?> GetAllProductByNameAsync(string name);
-    Task<T> GetProductByIdAsync(int id);
+    Task<T> GetProductByIdAsync(int? id);
+    Task UpdateProductAsync(T product);
 }

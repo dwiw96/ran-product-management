@@ -42,29 +42,29 @@ public class ProductInventory : AuditableEntity
     [Column("price")]
     [Required]
     [Range(1, int.MaxValue)]
-    public int Price { get; set; }
+    public int? Price { get; set; }
     
     [Column("stock")]
     [Required]
     [Range(0, uint.MaxValue)]
-    public int Stock { get; set; }
+    public int? Stock { get; set; }
     
     [Column("min_buy")]
     [Required]
     [Range(1, uint.MaxValue)]
-    public int MinBuy { get; set; }
+    public int? MinBuy { get; set; }
     
     [Column("condition")]
     [Required]
-    public ProductCondition Condition { get; set; }
+    public ProductCondition? Condition { get; set; }
     
     [Column("status")]
     [Required]
-    public ProductStatus Status { get; set; }
+    public ProductStatus? Status { get; set; }
     
     [Column("category_id")]
     [Required]
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
     public ProductCategory Category { get; set; } = null!;
     
     // [Column("created_at", TypeName = "timestamp without time zone")]

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ran_product_management_net.Database.Postgresql;
 using ran_product_management_net.Database.Postgresql.Models;
+using ran_product_management_net.Models.DTOs.Request;
 using ran_product_management_net.Utils;
 using NotImplementedException = ran_product_management_net.Utils.NotImplementedException;
 
@@ -50,12 +51,29 @@ public class ProductInventoryRepository(ApplicationDbContext context) : IProduct
 
         return inventoryResult.Entity;
     }
+
+    public async Task UpdateProductAsync(ProductInventory arg)
+    {
+        var rowsUpdatedNumber = await _context.ProductInventories
+            .Where(t => t.Id == arg.Id)
+            .ExecuteUpdateAsync(setters =>
+                setters
+                    .SetProperty(t => t.Price, t => arg.Price ?? t.Price)
+                    .SetProperty(t => t.Stock, t => arg.Stock ?? t.Stock)
+                    .SetProperty(t => t.MinBuy, t => arg.MinBuy ?? t.MinBuy)
+                    .SetProperty(t => t.Condition, t => arg.Condition ?? t.Condition)
+                    .SetProperty(t => t.Status, t => arg.Status ?? t.Status)
+                    .SetProperty(t => t.CategoryId, t => arg.CategoryId ?? t.CategoryId)
+                    .SetProperty(t => t.ModifiedAt, t => DateTime.Now));
+        
+        await _context.SaveChangesAsync();
+    }
     
     public Task<ProductInventory?> GetAllProductByNameAsync(string name)
     {
         throw new NotImplementedException("Method not created yet.");
     }
-    public Task<ProductInventory> GetProductByIdAsync(int id)
+    public Task<ProductInventory> GetProductByIdAsync(int? id)
     {
         throw new NotImplementedException("Method not created yet.");
     }

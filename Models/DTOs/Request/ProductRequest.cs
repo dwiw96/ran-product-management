@@ -63,3 +63,53 @@ public class CreateProductReq
         }
     }
 }
+
+public class UpdateProductReq
+{
+    // [Required(ErrorMessage = "id is required")]
+    // public string Id { get; set; } = null!;
+    
+    [StringLength(255, MinimumLength = 1, ErrorMessage = "Product name must be between 1 and 255 characters")]
+    public string? ProductName { get; set; }
+    
+    [Range(1, 1000000000, ErrorMessage = "price must be between $1 and $2")]
+    public int? Price { get; set; }
+    
+    [Range(1, 1000000000, ErrorMessage = "stock must be between $1 and $2")]
+    public int? Stock { get; set; }
+    
+    [Range(1, 1000000, ErrorMessage = "min_buy must be between $1 and $2")]
+    public int? MinBuy { get; set; }
+    
+    [EnumDataType(typeof(ProductCondition))]
+    public ProductCondition Condition { get; set; }
+    
+    [EnumDataType(typeof(ProductStatus))]
+    public ProductStatus Status { get; set; }
+
+    public int? CategoryId { get; set; }
+    public string? Desc { get; set; }
+    public string? Brand { get; set; }
+    public string? Model { get; set; }
+    public Dictionary<string, string>? Details { get; set; }
+
+    public void Print()
+    {
+        Console.WriteLine("Update Product Request");
+        Console.WriteLine("Name: " + this.ProductName);
+        Console.WriteLine("Price: " + this.Price);
+        Console.WriteLine("Stock: " + this.Stock);
+        Console.WriteLine("MinBuy: " + this.MinBuy);
+        Console.WriteLine("Condition: " + this.Condition);
+        Console.WriteLine("Status: " + this.Status);
+        Console.WriteLine("CategoryId: " + this.CategoryId);
+        Console.WriteLine("Desc: " + this.Desc);
+        Console.WriteLine("Brand: " + this.Brand);
+        Console.WriteLine("Model: " + this.Model);
+        Console.WriteLine("Details: ");
+        foreach (KeyValuePair<string, string> d in this.Details)
+        {
+            Console.WriteLine("{0}: {1}", d.Key, d.Value);
+        }
+    }
+}
