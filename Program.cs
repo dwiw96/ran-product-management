@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using ran_product_management_net.Database.Postgresql.Models;
 using System.Text.Json.Serialization;
 using ran_product_management_net.Database.Mongodb;
+using ran_product_management_net.Database.Mongodb.Models;
+using ran_product_management_net.Repositories;
 using ran_product_management_net.Utils;
 
 
@@ -25,6 +27,10 @@ builder.Services
             .EnableSensitiveDataLogging());
 
 builder.Services.AddSingleton<MongoDBService>();
+builder.Services.AddScoped<IProductRepository<ProductCategory>, ProductCategoryRepository>();
+builder.Services.AddScoped<IProductRepository<ProductInventory>, ProductInventoryRepository>();
+builder.Services.AddScoped<IProductRepository<ProductDetail>, ProductDetailRepository>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
